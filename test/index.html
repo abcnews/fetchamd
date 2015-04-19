@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+		<link rel="stylesheet" type="text/css" href="../node_modules/mocha/mocha.css">
+		<script src="../node_modules/chai/chai.js"></script>
+		<script src="../node_modules/jquery/dist/jquery.js"></script>
+		<script src="../node_modules/mocha/mocha.js"></script>
+
+	  	<script>
+		mocha.setup('bdd');
+		window.onload = function(){
+			mocha.run();
+		}
+		</script>
+		<script src="test.js"></script>
+	</head>
+	<body>
+	  <div id="mocha"></div>
+	</body>
+</html>
