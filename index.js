@@ -118,9 +118,14 @@
         if(!window.define){
             return cb();
         }
+
+        // There's already a `define` in the window, and it's not ours.
         if(!define.amd || !define.amd.semirequire){
             throw 'Incompatible mix of defines found in page.';
         }
+
+        // There's a define from another version of standalone-require.
+        // We're okay to wait around until it's done.
         waitUntil(function(){
             return typeof window.define === 'undefined';
         }, cb)

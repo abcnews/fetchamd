@@ -1,6 +1,6 @@
 {
-  "name": "standalone-require",
-  "version": "0.0.1",
+  "name": "fetchamd",
+  "version": "1.0.0",
   "description": "A lightweight, mostly AMD module loader.",
   "main": "index.js",
   "scripts": {

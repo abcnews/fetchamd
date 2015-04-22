@@ -1,10 +1,13 @@
-Fetch Module
+fetchamd
 ============
 
-A lightweight AMD module loading implementation.
+A lightweight AMD module loader for the client-side.
+
+Have you ever wanted to load up a library programmatically, like Underscore, D3, or something you've written yourself and felt it's just out of your grasp? Enter
+fetchamd, your dead simple AMD loader.
 
 ````
-var load = require('fetchmodule');
+var load = require('fetchamd');
 
 load([
     'http://example.org/module1.js',
@@ -26,7 +29,7 @@ Browserify) rather than full trees of AMD dependencies.
 Supports:
 
 * Require single or multiple modules.
-* Async loading & optimised script insertion (utilises browser compile/caching
+* Async loading & optimal script insertion (utilises browser compile/caching
   optimisations)
 * Basic implementation for older IEs using jQuery's preexisting implementation.
   This reduces the size and complexity of this library.
