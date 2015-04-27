@@ -36,24 +36,24 @@
 		doEach();
 	};
 
-    /**
-     * Poll doucment state until things are good.
-     */
-    var waitUntil = function(condition, cb){
-        var checkInterval = 100; // ms
-        var interval = function(){
-            if(!condition()){
-                setTimeout(interval);
-            } else {
-                cb();
-            }
-        };
-        interval();
-    }
+	/**
+	 * Poll document state until things are good.
+	 */
+	var waitUntil = function(condition, cb){
+		var checkInterval = 50; // ms
+		var interval = function(){
+			if(!condition()){
+				setTimeout(interval);
+			} else {
+				cb();
+			}
+		};
+		interval();
+	}
 
 	/**
 	 * Load a script & call back when it's fired.
-	 * @todo Timeout/error detection if people want it.
+	 * @todo Timeout/error detection if this would be valuable.
 	 */
 	var scriptLoad = function(module, onload){
 		// Create a script for feature detection & potentially loading with.
@@ -111,25 +111,25 @@
 
 	// Define function complies with a basic subset of the AMD API
 	define.amd = {
-        semirequire: 1
-    };
+		fetchamd: 1
+	};
 
-    var onReady = function(cb){
-        if(!window.define){
-            return cb();
-        }
+	var onReady = function(cb){
+		if(!window.define){
+			return cb();
+		}
 
-        // There's already a `define` in the window, and it's not ours.
-        if(!define.amd || !define.amd.semirequire){
-            throw 'Incompatible mix of defines found in page.';
-        }
+		// There's already a `define` in the window, and it's not ours.
+		if(!define.amd || !define.amd.fetchamd){
+			throw 'Incompatible mix of defines found in page.';
+		}
 
-        // There's a define from another version of standalone-require.
-        // We're okay to wait around until it's done.
-        waitUntil(function(){
-            return typeof window.define === 'undefined';
-        }, cb)
-    }
+		// There's a define from another version of fetchamd, so wait
+		// around until it's finished.
+		waitUntil(function(){
+			return typeof window.define === 'undefined';
+		}, cb)
+	}
 
 	/**
 	 * Get one module+dependencies
@@ -163,7 +163,7 @@
 			// Fetch any extra dependencies if required
 			if (thisDefine.deps) {
 				console.error(
-					'Require: don\'t use second level dependencies',
+					'fetchamd: don\'t use second level dependencies',
 					module
 				);
 				done();
@@ -177,14 +177,14 @@
 			}
 		};
 
-        // wait unti the page is ready to start loading.
-        onReady(function(){
-    		// Insert a global define method, because that's what AMD scripts look
-    		// for. This may interfere with other scripts, so we try to keep it
-    		// global for as short a time as possible.
-    		global.define = define;
-    		scriptLoad(module, onload);
-        });
+		// wait unti the page is ready to start loading.
+		onReady(function(){
+			// Insert a global define method, because that's what AMD scripts look
+			// for. This may interfere with other scripts, so we try to keep it
+			// global for as short a time as possible.
+			global.define = define;
+			scriptLoad(module, onload);
+		});
 	};
 
 	/**
