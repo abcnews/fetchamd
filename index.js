@@ -40,7 +40,7 @@
 	 * Poll document state until things are good.
 	 */
 	var waitUntil = function(condition, cb){
-		var checkInterval = 100; // ms
+		var checkInterval = 50; // ms
 		var interval = function(){
 			if(!condition()){
 				setTimeout(interval);
