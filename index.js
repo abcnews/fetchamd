@@ -161,7 +161,7 @@
 			}
 
 			// Fetch any extra dependencies if required
-			if (thisDefine.deps) {
+			if (thisDefine.deps && thisDefine.deps.length) {
 				console.error(
 					'fetchamd: don\'t use second level dependencies',
 					module

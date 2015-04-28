@@ -61,4 +61,14 @@ describe('Require', function(){
             });
         });
     });
+    it('can load a Browserified standalone module.', function(done){
+        getfetchModule(function(fetchModule){
+            fetchModule(['requireable3-browserify.js'], function(item3){
+                chai.assert(typeof item3, 'number');
+		// item3 exports the number 5.
+                chai.assert(item3, 5);
+                done();
+            });
+        });
+    });
 })
