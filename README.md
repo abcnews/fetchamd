@@ -38,3 +38,14 @@ Differences from AMD spec:
 
 * Relative module loading is not implemented (if module "a/b/c" asks for "../d", AMD resolves to "a/d"). For this reason:
 * Dependencies are not supported. Use Browserify to bundle up your dependencies prior to loading, or load them yourself.
+
+Development
+-----------
+
+Tests for this module are written in Mocha + Chai & require a web server (such
+as Python's SimpleHTTPServer). To test this module:
+
+1. `npm install` to make sure you have all the dependencies.
+2. `npm run server` to start a web server (this step requires Python, but you
+    can run this from your own web server if you'd prefer).
+3. Open `http://0.0.0.0:8000/test/` in your browser to run the tests.
