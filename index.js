@@ -154,7 +154,9 @@
 			var thisDefine = $.extend({}, lastDefine);
 
 			function done(args) {
-				defined[module] = thisDefine.factory.apply(this, args);
+				if(thisDefine && typeof thisDefine.factory === 'function'){
+					defined[module] = thisDefine.factory.apply(this, args);
+				}
 
 				// Reply with the last define we defined.
 				callback(defined[module]);
