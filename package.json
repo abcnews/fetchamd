@@ -10,6 +10,7 @@
   "author": "Ash Kyd <kyd.ashley@abc.net.au>",
   "license": "ISC",
   "devDependencies": {
+    "assertive-chai": "^2.0.1",
     "chai": "^2.2.0",
     "jquery": "^2.1.3",
     "mocha": "^2.2.4"
