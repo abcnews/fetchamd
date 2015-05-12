@@ -138,45 +138,38 @@
 	 * @param module [String] String path to the module to load.
 	 * @param callback [function] Callback recieves requested module as only argument.
 	 */
-	var requireOne = function(module, callback) {
+	var requireOne = function(modulePath, callback) {
 		// Module already loaded? Return it straight away.
-		if (defined[module]) {
-			callback(defined[module]);
+		if (defined[modulePath]) {
+			callback(defined[modulePath]);
 			return;
 		}
 
 		// When the script loads, do the following:
 		var onload = function() {
 			// Remove it so it has less chance to interfere with anything.
-			delete window.define;
+			window.define = undefined;
 
 			// Make a copy because we may clobber it fetching extra deps.
 			var thisDefine = $.extend({}, lastDefine);
 
 			function done(args) {
 				if(thisDefine && typeof thisDefine.factory === 'function'){
-					defined[module] = thisDefine.factory.apply(this, args);
+					defined[modulePath] = thisDefine.factory.apply(this, args);
 				}
 
 				// Reply with the last define we defined.
-				callback(defined[module]);
+				callback(defined[modulePath]);
 			}
 
 			// Fetch any extra dependencies if required
 			if (thisDefine.deps && thisDefine.deps.length) {
 				console.error(
 					'fetchamd: don\'t use second level dependencies',
-					module
+					modulePath
 				);
-				done();
-				// This would work, but we shouldn't rely on it because it will
-				// make a migration to RequireJS et al exponentionally difficult
-				// getMany(thisDefine.deps, function() {
-				// 	done(arguments);
-				// });
-			} else {
-				done();
 			}
+			done();
 		};
 
 		// wait unti the page is ready to start loading.
@@ -185,7 +178,7 @@
 			// for. This may interfere with other scripts, so we try to keep it
 			// global for as short a time as possible.
 			global.define = define;
-			scriptLoad(module, onload);
+			scriptLoad(modulePath, onload);
 		});
 	};
 
