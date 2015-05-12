@@ -7,6 +7,7 @@
     "test": "echo \"run 'npm run server', then open http://0.0.0.0:8000/test/\"",
     "server": "python -m SimpleHTTPServer"
   },
+  "repository": "abcnews/fetchamd",
   "author": "Ash Kyd <kyd.ashley@abc.net.au>",
   "license": "ISC",
   "devDependencies": {
