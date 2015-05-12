@@ -154,8 +154,19 @@
 			var thisDefine = $.extend({}, lastDefine);
 
 			function done(args) {
-				if(thisDefine && typeof thisDefine.factory === 'function'){
-					defined[modulePath] = thisDefine.factory.apply(this, args);
+				if(thisDefine){
+					// Apply the factory.
+					// https://github.com/amdjs/amdjs-api/wiki/AMD#factory-
+					if(typeof thisDefine.factory === 'function'){
+						// factory, is a fn that should be executed to
+						// instantiate the module. Tt should only be
+						// executed once.
+						defined[modulePath] = thisDefine.factory.apply(this, (args || []));
+					} else if(typeof thisDefine.factory === 'object') {
+						// If the factory argument is an object, that object
+						// should be assigned as the exported value.
+						defined[modulePath] = thisDefine.factory;
+					}
 				}
 
 				// Reply with the last define we defined.
