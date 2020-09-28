@@ -8,14 +8,12 @@ or something you've written yourself and felt it's just out of your grasp? Enter
 fetchamd, your dead simple AMD loader.
 
 ````
-var load = require('fetchamd');
+import fetchamd from 'fetchamd';
 
-load([
-    'http://example.org/module1.js',
-    '/res/modules/module2.js'
-], function(module1, module2){
-    // module1 and module2 are ready to use.
-});
+load('http://example.org/module1.js')
+  .then(module1 => {
+    // module1 is ready to use.
+  });
 ````
 
 Features/support
@@ -29,7 +27,7 @@ Browserify) rather than full trees of AMD dependencies.
 
 *Browser support:*
 
-This library is working on all modern browsers, and should work in IE 11.
+This library is working on all modern browsers, and should work in IE 11 with an [Object.assign](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign) polyfill
 
 *AMD Support:*
 
@@ -45,6 +43,12 @@ Fetchamd can presently do the following:
 
 * Relative module loading is not implemented (if module "a/b/c" asks for "../d", AMD resolves to "a/d"). For this reason:
 * dependencies are not supported. Use Browserify to bundle up your dependencies prior to loading, or load them yourself.
+
+Error messages
+--------------
+
+* **Incompatible mix of defines found in page**: there is another AMD module loader in the page which conflicts with this one. Remove that module loader and try again.
+* **fetchamd: don't use second level dependencies**: the module tried to recursively load more dependencies. This is not supported. You might need to use something like RequireJS.  
 
 Development
 -----------
