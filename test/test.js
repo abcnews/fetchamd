@@ -2,6 +2,14 @@
 
 describe('Require', () => {
   describe('basic', () => {
+    it('can load multiple modules', (done) => {
+      Promise.all([fetchAmd('requireable1.js'), fetchAmd('requireable2.js')]).then(([item1, item2]) => {
+        chai.assert(typeof item1, 'object');
+        chai.assert(item1.name, 'item one');
+        chai.assert(item2.name, 'item two');
+        done();
+      });
+    });
     it('can load a single module.', (done) => {
       fetchAmd('requireable1.js').then((item1) => {
         chai.assert(typeof item1, 'object');

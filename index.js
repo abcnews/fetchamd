@@ -13,21 +13,9 @@
   const defined = {};
 
   /**
-   * Poll document state until things are good.
+   * Number of modules yet to call back
    */
-  function waitUntil(condition) {
-    return new Promise((resolve) => {
-      const checkInterval = 50; // ms
-      function interval() {
-        if (!condition()) {
-          setTimeout(interval, checkInterval);
-        } else {
-          resolve();
-        }
-      }
-      interval();
-    });
-  }
+  let modulesCount = 0;
 
   /**
    * Load a script & call back when it's fired.
@@ -76,21 +64,6 @@
     fetchamd: 1,
   };
 
-  function waitUntilReady() {
-    if (!window.define) {
-      return Promise.resolve();
-    }
-
-    // There's already a `define` in the window, and it's not ours.
-    if (!define.amd || !define.amd.fetchamd) {
-      throw new Error('Incompatible mix of defines found in page.');
-    }
-
-    // There's a define from another version of fetchamd, so wait
-    // around until it's finished.
-    return waitUntil(() => typeof window.define === 'undefined');
-  }
-
   /**
    * Get one module+dependencies
    * This function gets the specified module, firing off another getMany if
@@ -104,49 +77,54 @@
       return Promise.resolve(defined[modulePath]);
     }
 
-    return new Promise((resolve, reject) => {
-    // wait unti the page is ready to start loading.
-      waitUntilReady()
-        .then(() => {
-        // Insert a global define method, because that's what AMD scripts look
-        // for. This may interfere with other scripts, so we try to keep it
-        // global for as short a time as possible.
-          window.define = define;
+    // There's already a `define` in the window, and it's not ours.
+    if (!define.amd || !define.amd.fetchamd) {
+      throw new Error('Incompatible mix of defines found in page.');
+    }
 
-          scriptLoad(modulePath).then(() => {
-            // Remove it so it has less chance to interfere with anything.
-            window.define = undefined;
+    // Insert a global define method, because that's what AMD scripts look
+    // for. This may interfere with other scripts, so we try to keep it
+    // global for as short a time as possible.
+    window.define = define;
+    modulesCount += 1;
 
-            // Make a copy because we may clobber it fetching extra deps.
-            const thisDefine = { ...lastDefine };
+    return scriptLoad(modulePath)
+      .then(() => {
+        modulesCount -= 1;
 
-            // Fetch any extra dependencies if required
-            if (thisDefine.deps && thisDefine.deps.length) {
-              throw new Error(
-                `fetchamd: don't use second level dependencies: ${modulePath}`,
-              );
-            }
+        if (modulesCount === 0) {
+          // Remove it so it has less chance to interfere with anything.
+          window.define = undefined;
+        }
 
-            if (thisDefine) {
-              // Apply the factory.
-              // https://github.com/amdjs/amdjs-api/wiki/AMD#factory-
-              if (typeof thisDefine.factory === 'function') {
-                // factory, is a fn that should be executed to
-                // instantiate the module. Tt should only be
-                // executed once.
-                defined[modulePath] = thisDefine.factory.apply(this, []);
-              } else if (typeof thisDefine.factory === 'object') {
-                // If the factory argument is an object, that object
-                // should be assigned as the exported value.
-                defined[modulePath] = thisDefine.factory;
-              }
-            }
+        // Make a copy because we may clobber it fetching extra deps.
+        const thisDefine = { ...lastDefine };
 
-            // Reply with the last define we defined.
-            resolve(defined[modulePath]);
-          }).catch(reject);
-        });
-    });
+        // Fetch any extra dependencies if required
+        if (thisDefine.deps && thisDefine.deps.length) {
+          throw new Error(
+            `fetchamd: don't use second level dependencies: ${modulePath}`,
+          );
+        }
+
+        if (thisDefine) {
+          // Apply the factory.
+          // https://github.com/amdjs/amdjs-api/wiki/AMD#factory-
+          if (typeof thisDefine.factory === 'function') {
+            // factory, is a fn that should be executed to
+            // instantiate the module. Tt should only be
+            // executed once.
+            defined[modulePath] = thisDefine.factory.apply(this, []);
+          } else if (typeof thisDefine.factory === 'object') {
+            // If the factory argument is an object, that object
+            // should be assigned as the exported value.
+            defined[modulePath] = thisDefine.factory;
+          }
+        }
+
+        // Reply with the last define we defined.
+        return defined[modulePath];
+      });
   }
 
   // Expose some globals
