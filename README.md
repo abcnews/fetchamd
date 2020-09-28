@@ -27,16 +27,9 @@ recursive module loading or relative name resolution. Thus, it is intended as
 a loader for discrete pre-compiled modules (such as those compiled with
 Browserify) rather than full trees of AMD dependencies.
 
-*Requirements:*
-
-To keep the filesize down, this library requires jQuery's `$.ajax` and
-`$.extend` methods. For older versions of IE, jQuery's ajax method is used
-rather than native HTML methods for compatibility.
-
 *Browser support:*
 
-This library is working on all modern browsers and has been tested in IE
-versions 7 through 11.
+This library is working on all modern browsers, and should work in IE 11.
 
 *AMD Support:*
 
